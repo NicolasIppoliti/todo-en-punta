@@ -3,21 +3,27 @@ import { Container, Grid } from '@mui/material';
 import SearchBar from './components/SearchBar';
 import CategoryFilter from './components/CategoryFilter';
 import ShopList from './components/ShopList';
-import { getShops } from './firestore';
+import { getBusinesses, getCategories } from './firestore';
 
 const App = () => {
   const [shops, setShops] = useState([]);
   const [filteredShops, setFilteredShops] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('');
-  const categories = ['Categoría 1', 'Categoría 2', 'Categoría 3']; // Reemplazar con las categorías que desees.
+  const [categories, setCategories] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
-      const data = await getShops();
+      const data = await getBusinesses();
       setShops(data);
     };
 
+    const fetchCategories = async () => {
+      const data = await getCategories();
+      setCategories(data);
+    };
+
+    fetchCategories();
     fetchData();
   }, []);
 
@@ -42,10 +48,11 @@ const App = () => {
           <SearchBar onSearch={(term) => setSearchTerm(term)} />
         </Grid>
         <Grid item xs={12} md={6}>
-          <CategoryFilter
-            categories={categories}
-            onFilter={(category) => setSelectedCategory(category)}
-          />
+        <CategoryFilter
+        categories={categories}
+        selectedCategory={selectedCategory}
+        onSelectCategory={setSelectedCategory}
+        />
         </Grid>
         <Grid item xs={12}>
           <ShopList shops={filteredShops} />

@@ -1,6 +1,18 @@
 import {firestore} from './firebaseConfig';
 
-export const getShops = async () => {
+export const getCategories = async () => {
+    const snapshot = await firestore.collection('businesses').get();
+    const categories = new Set();
+
+    snapshot.forEach((doc) => {
+        const data = doc.data();
+        categories.add(data.category);
+    });
+
+    return Array.from(categories);
+};  
+
+export const getBusinesses = async () => {
     const snapshot = await firestore.collection('businesses').get();
     const shops = [];
 
